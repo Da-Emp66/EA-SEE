@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "ea-see"
+version = "0.1.0"
+description = ""
+authors = ["Da-Emp66 <asherbean10@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+dlib = "^19.24.6"
+opencv-python = "^4.10.0.84"
+torch = "^2.4.1"
+python-dotenv = "^1.0.1"
+fastapi = "^0.115.0"
+uvicorn = "^0.30.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
