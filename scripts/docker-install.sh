@@ -7,7 +7,7 @@ download_weights () {
 }
 
 # Set up environment variables
-source .env
+source .env >/dev/null 2>&1
 
 # Download the pretrained weights - if not already installed
 download_weights

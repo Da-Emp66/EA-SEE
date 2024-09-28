@@ -7,4 +7,4 @@
 docker compose up -d
 
 # Run the client
-python3 client.py
+python3 client.py 0

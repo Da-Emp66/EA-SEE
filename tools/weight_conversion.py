@@ -1,10 +1,10 @@
 import argparse
 import os
-from typing import Union
 import warnings
 import torch
 import torch.nn as nn
 import torchfile
+from typing import Union
 from ea_see.model import FaceEmbeddingModel
 
 def resolve_layer_index(model: Union[nn.Module, FaceEmbeddingModel], relative_index: int, layer_type: type = nn.Conv2d):

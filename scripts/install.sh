@@ -1,12 +1,14 @@
 #!/bin/bash
 
-install_dataset () {
+install_premade_dataset () {
     if [ ! -f $DATASET_DOWNLOAD_FILE ]; then
-        wget $DATASET_DOWNLOAD_URL
+        gdown $DATASET_DOWNLOAD_URL
     fi
     if [ ! -d $DATASET_DIR ]; then
-        bzip2 -dk $DATASET_DIR
+        tar -xzvf $DATASET_DOWNLOAD_FILE $DATASET_DIR
     fi
+
+    rm $DATASET_DOWNLOAD_FILE >/dev/null 2>&1
 }
 
 download_weights () {
@@ -27,7 +29,7 @@ install_miniconda () {
 }
 
 setup_environment () {
-    source .env
+    source .env >/dev/null 2>&1
 
     install_miniconda
 
@@ -49,7 +51,7 @@ setup_environment () {
 setup_environment
 
 # Install the dataset - if not already installed
-install_dataset
+install_premade_dataset
 
-# Download the pretrained weights - if not already installed
+# Download the pretrained weights - if not already downloaded
 download_weights
