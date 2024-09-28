@@ -6,6 +6,9 @@ download_weights () {
     fi
 }
 
+# Set up environment variables
+source .env
+
 # Download the pretrained weights - if not already installed
 download_weights
 

@@ -1,11 +1,11 @@
 #!/bin/bash
 
 install_dataset () {
-    if [ ! -f $DATASET_FILE ]; then
+    if [ ! -f $DATASET_DOWNLOAD_FILE ]; then
         wget $DATASET_DOWNLOAD_URL
     fi
-    if [ ! -d $DATASET_FILE ]; then
-        bzip2 -dk $DATASET_FILE
+    if [ ! -d $DATASET_DIR ]; then
+        bzip2 -dk $DATASET_DIR
     fi
 }
 
