@@ -28,6 +28,36 @@ install_miniconda () {
     fi
 }
 
+install_dlib_with_cuda () {
+    source ~/.bashrc
+    conda activate $CONDA_ENV
+    sudo hwclock --hctosys
+    sudo apt-get update && sudo apt-get install gcc-11 g++-11
+    # if ! nvcc ; then
+    #     sudo apt-get update && sudo apt-get install nvidia-cuda-toolkit -y
+    # fi
+    sudo apt-get update && sudo apt-get install libavdevice-dev libavfilter-dev libavformat-dev -y
+    sudo apt-get update && sudo apt-get install libavcodec-dev libswresample-dev libswscale-dev -y
+    sudo apt-get update && sudo apt-get install libavutil-dev -y
+    sudo apt-get update && sudo apt-get install libblas-dev -y
+    sudo apt-get update && sudo apt-get upgrade -y
+
+    if [ ! -d $BUILD_DIR ]; then
+        mkdir -p $BUILD_DIR
+    fi
+    cd $BUILD_DIR
+
+    if [ ! -d dlib ]; then
+        git clone https://github.com/davisking/dlib.git
+    fi
+    cd dlib
+
+    python setup.py install --set CMAKE_C_COMPILER='/usr/bin/gcc-11'
+    # DLIB_USE_CUDA_COMPUTE_CAPABILITIES=89
+
+    cd ../..
+}
+
 setup_environment () {
     source .env >/dev/null 2>&1
 
@@ -45,6 +75,7 @@ setup_environment () {
 
     pip3 install poetry
     poetry install
+    install_dlib_with_cuda
 }
 
 # Set up environment - if not already set up

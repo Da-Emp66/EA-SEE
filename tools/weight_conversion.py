@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 import torchfile
 from typing import Union
-from ea_see.model import FaceEmbeddingModel
+from ea_see.recognition.model import FaceEmbeddingModel
 
 def resolve_layer_index(model: Union[nn.Module, FaceEmbeddingModel], relative_index: int, layer_type: type = nn.Conv2d):
     counter = 0
@@ -22,7 +22,7 @@ def resolve_layer_index(model: Union[nn.Module, FaceEmbeddingModel], relative_in
 
 def convert_t7_vgg_face_embedding_model_to_pt(t7_filepath: os.PathLike, pt_filepath: os.PathLike):
     torch_model = torchfile.load(t7_filepath)
-    embedding_model = FaceEmbeddingModel(device="cpu")
+    embedding_model = FaceEmbeddingModel()
 
     index = 0
 

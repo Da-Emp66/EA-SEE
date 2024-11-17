@@ -4,7 +4,7 @@ import numpy as np
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from ea_see.component import FaceRecognizer
+from ea_see.recognition.component import FaceRecognizer
 
 app = FastAPI()
 fr = FaceRecognizer()
