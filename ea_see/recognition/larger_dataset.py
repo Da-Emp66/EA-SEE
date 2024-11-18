@@ -5,6 +5,7 @@ import re
 from ordered_set import OrderedSet
 import torch
 import torchvision
+import yaml
 
 from dotenv import load_dotenv
 from torch.utils.data import Dataset
@@ -24,6 +25,7 @@ class LargerFaceRecognitionDataset(Dataset):
             torchvision.transforms.Normalize((0.1307,), (0.3081,))
         ]),
         lazy_loading: bool = False,
+        class_mappings_file = "class_mappings.yaml",
     ):
         self.transform = transform
         self.split = split
@@ -45,6 +47,10 @@ class LargerFaceRecognitionDataset(Dataset):
             self.items = valid
 
         self.num_classes = len(self.classes)
+        self.class_mappings_file = class_mappings_file
+        with open(self.class_mappings_file, "w") as mappings:
+            yaml.dump({"mappings": list(self.classes)}, mappings)
+            mappings.close()
         
     def _load_fabricated_dataset(
         self,

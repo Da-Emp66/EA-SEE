@@ -7,6 +7,7 @@ import dlib
 import numpy as np
 import torch
 import torchvision
+import yaml
 
 from dotenv import load_dotenv
 from torch.utils.data import Dataset
@@ -29,6 +30,8 @@ class CustomFaceRecognitionDataset(Dataset):
         model_to_fabricate_with: Optional[os.PathLike] = None,
         image_dir_to_fabrication_from: Optional[os.PathLike] = None,
         dataset_dir_to_fabricate: Optional[os.PathLike] = None,
+        
+        class_mappings_file = "class_mappings.yaml",
     ):
         self.transform = transform
 
@@ -57,6 +60,11 @@ class CustomFaceRecognitionDataset(Dataset):
             for classname in self.classes:
                 images_in_class = os.listdir(os.path.join(self.dataset, classname))
                 self.items += [os.path.join(self.dataset, classname, image_file) for image_file in images_in_class]
+                
+        self.class_mappings_file = class_mappings_file
+        with open(self.class_mappings_file, "w") as mappings:
+            yaml.dump({"mappings": list(self.classes)}, mappings)
+            mappings.close()
         
     def _load_fabricated_dataset(
         self,

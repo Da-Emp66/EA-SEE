@@ -10,13 +10,15 @@ services:
       DATASET_FILE: ${DATASET_FILE}
       DATASET_DOWNLOAD_FILE: ${DATASET_DOWNLOAD_FILE}
       DATASET_DOWNLOAD_URL: ${DATASET_DOWNLOAD_URL}
-      WEIGHTS_FILE: /app/models/${WEIGHTS_FILE}
+      CLASSIFIER_WEIGHTS_FILE: /app/models/${CLASSIFIER_WEIGHTS_FILE}
+      EMBEDDING_WEIGHTS_FILE: /app/models/${EMBEDDING_WEIGHTS_FILE}
       WEIGHTS_DOWNLOAD_URL: ${WEIGHTS_DOWNLOAD_URL}
       SERVER_PORT: ${SERVER_PORT}
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
-      - ./${WEIGHTS_FILE}:/app/models/${WEIGHTS_FILE}
+      - ./${EMBEDDING_WEIGHTS_FILE}:/app/models/${EMBEDDING_WEIGHTS_FILE}
+      - ./${CLASSIFIER_WEIGHTS_FILE}:/app/models/${CLASSIFIER_WEIGHTS_FILE}
     deploy:
       resources:
         reservations:

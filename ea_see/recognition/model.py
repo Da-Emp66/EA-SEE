@@ -3,66 +3,6 @@ import torch.nn as nn
 class FaceEmbeddingModel(nn.Module):
     def __init__(self):
         super(FaceEmbeddingModel, self).__init__()
-        # self.model = nn.Sequential(
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(3, 64, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(64, 64, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.MaxPool2d((2,2), stride=(2,2)),
-
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(64, 128, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(128, 128, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.MaxPool2d((2,2), stride=(2,2)),
-
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(128, 256, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(256, 256, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(256, 256, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.MaxPool2d((2,2), stride=(2,2)),
-
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(256, 512, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(512, 512, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(512, 512, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.MaxPool2d((2,2), stride=(2,2)),
-
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(512, 512, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(512, 512, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.ZeroPad2d(1),
-        #     nn.Conv2d(512, 512, kernel_size=(3,3)),
-        #     nn.ReLU(),
-        #     nn.MaxPool2d((2,2), stride=(2,2)),
-
-        #     nn.Conv2d(512, 4096, kernel_size=(7,7)),
-        #     nn.ReLU(),
-        #     nn.Dropout(0.5),
-        #     nn.Conv2d(4096, 4096, kernel_size=(1,1)),
-        #     nn.ReLU(),
-        #     nn.Dropout(0.5),
-        #     nn.Conv2d(4096, 2622, kernel_size=(1,1)),
-        #     nn.Flatten(),
-        # )
-
         self.model = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=64, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),

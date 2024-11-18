@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 import torchvision
 import warnings
+import yaml
 
 from dotenv import load_dotenv
 from torch.utils.data import DataLoader
@@ -22,15 +23,16 @@ class FaceRecognizer:
     def __init__(
         self,
         classifier_weights_file: os.PathLike = None,
-        embedding_weights_file: os.PathLike = os.getenv('WEIGHTS_FILE'),
+        embedding_weights_file: os.PathLike = os.getenv('EMBEDDING_WEIGHTS_FILE'),
         device: torch.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"),
+        class_mappings_file = "class_mappings.yaml",
     ):
         self.device = device
 
         self.embedding_weights_file = embedding_weights_file
         self.embedding_model = FaceEmbeddingModel().to(device)
 
-        state = torch.load(self.embedding_weights_file)
+        state = torch.load(self.embedding_weights_file, weights_only=False)
         self.embedding_model.load_state_dict(state)
         self.embedding_model.compile()
 
@@ -38,7 +40,7 @@ class FaceRecognizer:
         self.classifier_model = FaceRecognitionModel(int(os.getenv('DATASET_CLASSES'))).to(device)
         
         if classifier_weights_file is not None:
-            state = torch.load(self.classifier_weights_file)
+            state = torch.load(self.classifier_weights_file, weights_only=False)
             self.classifier_model.load_state_dict(state)
         self.classifier_model.compile()
 
@@ -51,11 +53,18 @@ class FaceRecognizer:
             )
         ])
 
+        self.class_mappings_file = class_mappings_file
+        if os.path.exists(self.class_mappings_file):
+            self.class_mappings = yaml.safe_load(open(self.class_mappings_file))["mappings"]
+        else:
+            self.class_mappings = None
+            warnings.warn("No class mappings file found. Cannot perform inference without training first.")
+
     def train(
         self,
         dataset_class: type = LargerFaceRecognitionDataset,
         dataset_path: os.PathLike = os.getenv('DATASET_DIR'),
-        save_file: os.PathLike = "trained_weights.pt",
+        save_file: os.PathLike = os.getenv('CLASSIFIER_WEIGHTS_FILE'),
         num_epochs: int = 10,
         learning_rate: float = 0.003,
         batch_size: int = 10,
@@ -67,11 +76,12 @@ class FaceRecognizer:
         
         writer = SummaryWriter("logs/")
 
-        train_dataset = dataset_class(dataset_path, "train", transform=self.transform)
-        valid_dataset = dataset_class(dataset_path, "valid", transform=self.transform)
+        self.train_dataset = dataset_class(dataset_path, "train", transform=self.transform)
+        self.valid_dataset = dataset_class(dataset_path, "valid", transform=self.transform)
+        self.class_mappings = yaml.safe_load(open(self.class_mappings_file))["mappings"]
         
-        train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-        validation_dataloader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=True)
+        train_dataloader = DataLoader(self.train_dataset, batch_size=batch_size, shuffle=True)
+        validation_dataloader = DataLoader(self.valid_dataset, batch_size=batch_size, shuffle=True)
 
         loss_function = nn.CrossEntropyLoss()
         optimizer = torch.optim.SGD(self.classifier_model.parameters(), lr=learning_rate, weight_decay=0.005, momentum=0.9)
@@ -148,16 +158,25 @@ class FaceRecognizer:
                 torch.save(self.classifier_model.state_dict(), save_file)
 
     def __call__(self, image: Union[np.ndarray, os.PathLike]):
+        self.embedding_model.eval()
+        self.classifier_model.eval()
         if isinstance(image, str):
             image_matrix = cv2.imread(image)
-        image_matrix = self.transform(image_matrix)
-        prediction = self.model(image_matrix)
-        return prediction
+        image_matrix = self.transform(image_matrix).to(self.device)
+        with torch.no_grad():
+            embedding = self.embedding_model(image_matrix).view(1, -1) # Embed and reshape (as a result of batching)
+            prediction = self.classifier_model(embedding)
+            if self.class_mappings is None:
+                raise Exception("Cannot infer if there are no class mappings from training.")
+            label = self.class_mappings[prediction.argmax(dim=1, keepdim=True).item()]
+            print(label)
+            return label
 
 def main(args):
-    fr = FaceRecognizer()
 
     if args.train:
+        fr = FaceRecognizer()
+
         dataset_class = {
             "larger": LargerFaceRecognitionDataset,
             "custom": CustomFaceRecognitionDataset,
@@ -166,6 +185,7 @@ def main(args):
         fr.train(dataset_class=dataset_class, dataset_path=args.dataset_dir)
     else:
         if args.image is not None:
+            fr = FaceRecognizer(classifier_weights_file=os.getenv('CLASSIFIER_WEIGHTS_FILE'))
             fr(args.image)
         else:
             warnings.warn("Cannot infer on an unspecified image. Use `--image` to pass image path.")

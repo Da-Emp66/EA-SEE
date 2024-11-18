@@ -11,9 +11,9 @@ install_premade_dataset () {
     rm $DATASET_DOWNLOAD_FILE >/dev/null 2>&1
 }
 
-download_weights () {
-    if [ ! -f $WEIGHTS_FILE ]; then
-        gdown $WEIGHTS_DOWNLOAD_URL
+download_embedding_weights () {
+    if [ ! -f $EMBEDDING_WEIGHTS_FILE ]; then
+        gdown $EMBEDDING_WEIGHTS_DOWNLOAD_URL
     fi
 }
 

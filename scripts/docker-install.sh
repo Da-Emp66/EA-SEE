@@ -1,7 +1,7 @@
 #!/bin/bash
 
 download_weights () {
-    if [ ! -f $WEIGHTS_FILE ]; then
+    if [ ! -f $EMBEDDING_WEIGHTS_FILE ]; then
         gdown $WEIGHTS_DOWNLOAD_URL
     fi
 }
