@@ -65,7 +65,7 @@ class FaceRecognizer:
         dataset_class: type = LargerFaceRecognitionDataset,
         dataset_path: os.PathLike = os.getenv('DATASET_DIR'),
         save_file: os.PathLike = os.getenv('CLASSIFIER_WEIGHTS_FILE'),
-        num_epochs: int = 10,
+        num_epochs: int = 15,
         learning_rate: float = 0.003,
         batch_size: int = 10,
         transform: Optional[Any] = None,
@@ -156,6 +156,8 @@ class FaceRecognizer:
             if valid_accuracy >= best_valid_accuracy:
                 best_valid_accuracy = valid_accuracy
                 torch.save(self.classifier_model.state_dict(), save_file)
+        
+        print(f"Best validation accuracy: {best_valid_accuracy}")
 
     def __call__(self, image: Union[np.ndarray, os.PathLike]):
         self.embedding_model.eval()

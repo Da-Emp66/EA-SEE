@@ -1,14 +1,31 @@
 #!/bin/bash
 
-install_premade_dataset () {
-    if [ ! -f $DATASET_DOWNLOAD_FILE ]; then
-        gdown $DATASET_DOWNLOAD_URL
+install_custom_dataset () {
+    if [ ! -f $CUSTOM_DATASET_DOWNLOAD_FILE ]; then
+        gdown $CUSTOM_DATASET_DOWNLOAD_URL
     fi
-    if [ ! -d $DATASET_DIR ]; then
-        tar -xzvf $DATASET_DOWNLOAD_FILE $DATASET_DIR
+    if [ ! -d $CUSTOM_DATASET_DIR ]; then
+        tar -xzvf $CUSTOM_DATASET_DOWNLOAD_FILE $CUSTOM_DATASET_DIR
     fi
 
-    rm $DATASET_DOWNLOAD_FILE >/dev/null 2>&1
+    rm $CUSTOM_DATASET_DOWNLOAD_FILE >/dev/null 2>&1
+}
+
+install_larger_dataset () {
+    if [ ! -f $LARGER_DATASET_DOWNLOAD_FILE ]; then
+        gdown $LARGER_DATASET_DOWNLOAD_URL
+    fi
+    if [ ! -d $LARGER_DATASET_DIR ]; then
+        unzip $LARGER_DATASET_DOWNLOAD_FILE -d $LARGER_DATASET_DIR
+    fi
+
+    rm $LARGER_DATASET_DOWNLOAD_FILE >/dev/null 2>&1
+}
+
+install_premade_datasets () {
+    install_custom_dataset
+
+    install_larger_dataset
 }
 
 download_embedding_weights () {
@@ -31,7 +48,6 @@ install_miniconda () {
 install_dlib_with_cuda () {
     source ~/.bashrc
     conda activate $CONDA_ENV
-    sudo hwclock --hctosys
     sudo apt-get update && sudo apt-get install gcc-11 g++-11
     # if ! nvcc ; then
     #     sudo apt-get update && sudo apt-get install nvidia-cuda-toolkit -y
@@ -70,8 +86,9 @@ setup_environment () {
         conda activate $CONDA_ENV
     fi
 
-    sudo apt-get update
-    sudo apt-get install cmake g++ make -y
+    sudo hwclock --hctosys
+    sudo apt-get update && sudo apt-get install cmake g++ make -y
+    sudo apt-get update && sudo apt install unzip -y
 
     pip3 install poetry
     poetry install
@@ -81,8 +98,8 @@ setup_environment () {
 # Set up environment - if not already set up
 setup_environment
 
-# Install the dataset - if not already installed
-install_premade_dataset
+# Install the datasets - if not already installed
+install_premade_datasets
 
 # Download the pretrained weights - if not already downloaded
 download_weights

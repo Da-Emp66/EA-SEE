@@ -5,4 +5,4 @@
 
 source .env >/dev/null 2>&1
 
-python3 ea_see/recognition/component.py --train
+python3 ea_see/recognition/component.py --train --dataset-type larger
