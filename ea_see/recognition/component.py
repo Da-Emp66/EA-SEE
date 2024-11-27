@@ -32,8 +32,9 @@ class FaceRecognizer:
         self.embedding_weights_file = embedding_weights_file
         self.embedding_model = FaceEmbeddingModel().to(device)
 
-        state = torch.load(self.embedding_weights_file, weights_only=False)
-        self.embedding_model.load_state_dict(state)
+        if self.embedding_weights_file is not None:
+            state = torch.load(self.embedding_weights_file, weights_only=False)
+            self.embedding_model.load_state_dict(state)
         self.embedding_model.compile()
 
         self.classifier_weights_file = classifier_weights_file
@@ -69,6 +70,7 @@ class FaceRecognizer:
         learning_rate: float = 0.003,
         batch_size: int = 10,
         transform: Optional[Any] = None,
+        train_embedding_layer: Optional[bool] = False
     ):
         torch.set_float32_matmul_precision('high')
         if transform is not None:
@@ -103,7 +105,10 @@ class FaceRecognizer:
                 
                 optimizer.zero_grad()
 
-                with torch.no_grad():
+                if not train_embedding_layer:
+                    with torch.no_grad():
+                        embedding = self.embedding_model(image)
+                else:
                     embedding = self.embedding_model(image)
 
                 predictions = self.classifier_model(embedding)

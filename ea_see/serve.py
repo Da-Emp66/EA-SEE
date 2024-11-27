@@ -1,3 +1,4 @@
+import os
 import cv2
 import numpy as np
 
@@ -7,7 +8,7 @@ from pydantic import BaseModel
 from ea_see.recognition.component import FaceRecognizer
 
 app = FastAPI()
-fr = FaceRecognizer()
+fr = FaceRecognizer(os.getenv('CLASSIFIER_WEIGHTS_FILE'))
 
 class ImageHex(BaseModel):
     image: str
