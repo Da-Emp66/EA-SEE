@@ -123,6 +123,8 @@ class FaceRecognizer:
             
             print(f"Train Loss: {np.mean(train_losses)}")
             print(f"Train Accuracy: {correct_labels} / {samples} = {correct_labels * 100.0 / samples}%")
+            writer.add_scalars("Loss/Epoch", {"Train": np.mean(train_losses)}, epoch + 1)
+            writer.add_scalars("Accuracy/Epoch", {"Train": correct_labels * 100.0 / samples}, epoch + 1)
 
             self.classifier_model.eval()
             valid_accuracy = 0.0
@@ -145,13 +147,15 @@ class FaceRecognizer:
                     correct_labels += current_correct
                     total_labels += labels.shape[0]
 
-                    writer.add_scalars("Loss/Sample", {"Test": float(np.mean(valid_losses[-labels.shape[0]:]))}, total_labels)
-                    writer.add_scalars("Accuracy/Sample", {"Test": current_correct * 100.0 / labels.shape[0]}, total_labels)
+                    writer.add_scalars("Loss/Sample", {"Valid": float(np.mean(valid_losses[-labels.shape[0]:]))}, total_labels)
+                    writer.add_scalars("Accuracy/Sample", {"Valid": current_correct * 100.0 / labels.shape[0]}, total_labels)
 
             valid_accuracy = correct_labels * 100.0 / total_labels
 
             print(f"Valid Loss: {np.mean(valid_losses)}")
             print(f"Valid Accuracy: {correct_labels} / {total_labels} = {valid_accuracy}%")
+            writer.add_scalars("Loss/Epoch", {"Valid": np.mean(valid_losses)}, epoch + 1)
+            writer.add_scalars("Accuracy/Epoch", {"Valid": valid_accuracy}, epoch + 1)
 
             if valid_accuracy >= best_valid_accuracy:
                 best_valid_accuracy = valid_accuracy
