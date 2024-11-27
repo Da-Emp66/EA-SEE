@@ -5,6 +5,10 @@
 
 source .env >/dev/null 2>&1
 
-for i in {0..10} ; do
-    python3 ea_see/component.py --infer samples/$i.jpg
-done
+python3 ea_see/recognition/component.py --infer --image "./archive/Faces/Faces/Vijay Deverakonda_114.jpg"
+python3 ea_see/recognition/component.py --infer --image "./archive/Faces/Faces/Zac Efron_90.jpg"
+python3 ea_see/recognition/component.py --infer --image "./archive/Faces/Faces/Tom Cruise_57.jpg"
+python3 ea_see/recognition/component.py --infer --image "./archive/Faces/Faces/Virat Kohli_48.jpg"
+python3 ea_see/recognition/component.py --infer --image "./archive/Faces/Faces/Natalie Portman_104.jpg"
+python3 ea_see/recognition/component.py --infer --image "./archive/Faces/Faces/Marmik_31.jpg"
+python3 ea_see/recognition/component.py --infer --image "./archive/Faces/Faces/Margot Robbie_71.jpg"
