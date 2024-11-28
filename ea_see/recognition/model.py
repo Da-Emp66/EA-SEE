@@ -3,6 +3,7 @@ import torch.nn as nn
 class FaceEmbeddingModel(nn.Module):
     def __init__(self):
         super(FaceEmbeddingModel, self).__init__()
+        # Embedding model / Feature extractor
         self.model = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=64, kernel_size=3, padding=1),
             nn.ReLU(),
@@ -45,6 +46,7 @@ class FaceEmbeddingModel(nn.Module):
 class FaceRecognitionModel(nn.Module):
     def __init__(self, num_classes: int):
         super(FaceRecognitionModel, self).__init__()
+        # Classifier layer
         self.model = nn.Sequential(
             nn.Linear(25088, 4622),
             nn.BatchNorm1d(4622),

@@ -12,3 +12,14 @@ Facial Recognition with VGG-Face Using PyTorch
 ### Local
 
     . start.sh  # in Linux or WSL
+
+#### Training
+
+    # in Linux or WSL
+    # after running `. ./scripts/install.sh`
+    # or `. ./scripts/start.sh`
+    . ./scripts/train.sh
+
+### Docker
+
+** Not yet fully supported

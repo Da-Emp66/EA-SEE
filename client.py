@@ -23,12 +23,8 @@ def remote_recognize(image: Union[np.ndarray, os.PathLike]):
         json={ "image": image_bytes.hex() }
     )
 
-    response_image_bytes = response.json()['prediction']
-    
-    nparray = np.frombuffer(response_image_bytes['hex'], np.uint8)
-    image = cv2.imdecode(nparray, cv2.IMREAD_COLOR)
-
-    return image
+    response_class = response.json()['prediction']
+    return response_class
 
 def recognize_faces_thread():
     pass
