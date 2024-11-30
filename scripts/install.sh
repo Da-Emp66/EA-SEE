@@ -2,7 +2,7 @@
 
 install_custom_dataset () {
     if [ ! -f $CUSTOM_DATASET_DOWNLOAD_FILE ]; then
-        gdown $CUSTOM_DATASET_DOWNLOAD_URL
+        gdown $CUSTOM_DATASET_DOWNLOAD_URL -O $CUSTOM_DATASET_DOWNLOAD_FILE
     fi
     if [ ! -d $CUSTOM_DATASET_DIR ]; then
         tar -xzvf $CUSTOM_DATASET_DOWNLOAD_FILE $CUSTOM_DATASET_DIR
@@ -13,7 +13,7 @@ install_custom_dataset () {
 
 install_larger_dataset () {
     if [ ! -f $LARGER_DATASET_DOWNLOAD_FILE ]; then
-        gdown $LARGER_DATASET_DOWNLOAD_URL
+        gdown $LARGER_DATASET_DOWNLOAD_URL -O $LARGER_DATASET_DOWNLOAD_FILE
     fi
     if [ ! -d $LARGER_DATASET_DIR ]; then
         unzip $LARGER_DATASET_DOWNLOAD_FILE -d $LARGER_DATASET_DIR
@@ -30,8 +30,22 @@ install_premade_datasets () {
 
 download_embedding_weights () {
     if [ ! -f $EMBEDDING_WEIGHTS_FILE ]; then
-        gdown $EMBEDDING_WEIGHTS_DOWNLOAD_URL
+        gdown $EMBEDDING_WEIGHTS_DOWNLOAD_URL -O $EMBEDDING_WEIGHTS_FILE
     fi
+}
+
+download_classifier_weights () {
+    if [ ! -f $CLASSIFIER_WEIGHTS_FILE ]; then
+        gdown $CLASSIFIER_WEIGHTS_DOWNLOAD_URL -O $CLASSIFIER_WEIGHTS_FILE
+    fi
+}
+
+download_pretrained_weights () {
+
+    download_embedding_weights
+
+    download_classifier_weights
+
 }
 
 install_miniconda () {
@@ -102,4 +116,4 @@ setup_environment
 install_premade_datasets
 
 # Download the pretrained weights - if not already downloaded
-download_weights
+download_pretrained_weights

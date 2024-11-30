@@ -2,7 +2,7 @@
 
 download_weights () {
     if [ ! -f $EMBEDDING_WEIGHTS_FILE ]; then
-        gdown $EMBEDDING_WEIGHTS_DOWNLOAD_URL
+        gdown $EMBEDDING_WEIGHTS_DOWNLOAD_URL -O $EMBEDDING_WEIGHTS_FILE
     fi
 }
 
